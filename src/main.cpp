@@ -34,6 +34,13 @@ int height;
 int main(int argc, char** argv) {
 	startTimeString = currentTimeString();
 
+	if (argv[1]) {
+		printf("Somthing exists.\n");
+	}
+	else {
+		printf("Nothing exists.\n");
+	}
+
 	if (argc < 2) {
 		printf("Usage: %s SCENEFILE.txt\n", argv[0]);
 		return 1;

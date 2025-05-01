@@ -1,6 +1,11 @@
-cmake_minimum_required(VERSION 3.1)
+# cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5...4.0)
 
-project(cis565_path_tracer)
+project(cis565_path_tracer
+    LANGUAGES CXX CUDA
+)
+
+# enable_language(CUDA)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -13,6 +18,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Enable C++11 for host code
 set(CMAKE_CXX_STANDARD 11)
 
+
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
@@ -23,7 +29,9 @@ endif()
 ########################################
 # CUDA Setup
 ########################################
-find_package(CUDA 10 REQUIRED)
+set(CUDA_TOOLKIT_ROOT_DIR "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8")
+# find_package(CUDA 10 REQUIRED)
+find_package(CUDAToolkit REQUIRED)
 include(${CMAKE_MODULE_PATH}/CUDAComputesList.cmake)
 
 list(APPEND CUDA_NVCC_FLAGS ${CUDA_GENERATE_CODE})
@@ -114,8 +122,14 @@ source_group(Sources FILES ${sources})
 #add_subdirectory(src/ImGui)
 #add_subdirectory(stream_compaction)  # TODO: uncomment if using your stream compaction
 
-cuda_add_executable(${CMAKE_PROJECT_NAME} ${sources} ${headers})
-target_link_libraries(${CMAKE_PROJECT_NAME}
-    ${LIBRARIES}
-    #stream_compaction  # TODO: uncomment if using your stream compaction
-    )
+# cuda_add_executable(${CMAKE_PROJECT_NAME} ${sources} ${headers})
+# target_link_libraries(${CMAKE_PROJECT_NAME}
+#     ${LIBRARIES}
+#     #stream_compaction  # TODO: uncomment if using your stream compaction
+#     )
+# add_executable(${CMAKE_PROJECT_NAME} ${sources} ${headers})
+# target_link_libraries(${CMAKE_PROJECT_NAME} CUDA::cudart ${LIBRARIES})
+
+add_executable(${CMAKE_PROJECT_NAME} ${sources} ${headers})
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+target_link_libraries(${CMAKE_PROJECT_NAME} CUDA::cudart ${LIBRARIES})
