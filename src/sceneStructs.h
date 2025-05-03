@@ -38,6 +38,7 @@ struct Material {
     float hasRefractive;
     float indexOfRefraction;
     float emittance;
+    glm::vec3 refractionColor;
 };
 
 struct Camera {
@@ -49,6 +50,8 @@ struct Camera {
     glm::vec3 right;
     glm::vec2 fov;
     glm::vec2 pixelLength;
+    float lensRadius;
+    float focalDistance;
 };
 
 struct RenderState {
@@ -66,11 +69,17 @@ struct PathSegment {
     int remainingBounces;
 };
 
+
+
 // Use with a corresponding PathSegment to do:
 // 1) color contribution computation
 // 2) BSDF evaluation: generate a new ray
 struct ShadeableIntersection {
-  float t;
-  glm::vec3 surfaceNormal;
-  int materialId;
+    __host__ __device__ bool operator<(const ShadeableIntersection& s) const {
+        return materialId < s.materialId;
+    }
+
+    float t;
+    glm::vec3 surfaceNormal;
+    int materialId;
 };
